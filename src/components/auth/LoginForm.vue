@@ -119,7 +119,9 @@ export default {
 
       axios.post(url, data)
         .then((response) => {
-          console.log(JSON.stringify(response));
+          //console.log(JSON.stringify(response));
+          var dataUser = JSON.stringify(response.data)
+          localStorage.setItem("dataUser",dataUser)
           this.$q.notify({
             message: "Inicio de sesión exitoso",
             color: 'green',

@@ -6,38 +6,38 @@
         <div class="user-details">
           <div class="input-box">
             <span class="details">First name</span>
-            <input type="text" placeholder="Enter your first name" required>
+            <input type="text" v-model="firstName" placeholder="Enter your first name" required>
           </div>
           <div class="input-box">
             <span class="details">Last name</span>
-            <input type="text" placeholder="Enter your last name" required>
+            <input type="text" v-model="lastName" placeholder="Enter your last name" required>
           </div>
           <div class="input-box">
             <span class="details">Email</span>
-            <input type="text" placeholder="Enter your email" required>
+            <input type="text" v-model="email" placeholder="Enter your email" required>
           </div>
           <div class="input-box">
             <span class="details">Date of Birth</span>
-            <input type="date" placeholder="dd/mm/yyyy" required>
+            <input type="date" v-model="dateOfBirth" placeholder="dd/mm/yyyy" required>
           </div>
           <div class="input-box">
             <span class="details">Country</span>
-            <input type="text" placeholder="Enter your country" required>
+            <input type="text" v-model="country" placeholder="Enter your country" required>
           </div>
           <div class="input-box">
             <span class="details">Address</span>
-            <input type="text" placeholder="Enter your address" required>
+            <input type="text" v-model="address" placeholder="Enter your address" required>
           </div>
           <div class="input-box">
             <span class="details">Password</span>
-            <input type="text" placeholder="Enter your password" required>
+            <input type="text" v-model="password" placeholder="Enter your password" required>
           </div>
           <div class="input-box">
             <span class="details">Confirm Password</span>
-            <input type="text" placeholder="Confirm your password" required>
+            <input type="text" v-model="repeatPassword" placeholder="Confirm your password" required>
           </div>
         </div>
-        <div class="button">
+        <div class="button" @click="register">
           <input type="text" value="Register">
         </div>
       </div>
@@ -220,8 +220,67 @@ body {
 </style>
 
 <script>
+import axios from 'axios'
+
 export default {
-  name: "RegisterForm"
+  name: "RegisterForm",
+  data(){
+    return {
+      firstName:"",
+      lastName:"",
+      dateOfBirth:"",
+      country:"",
+      address:"",
+      email:"",
+      password:"",
+      repeatPassword:""
+    }
+  },
+  methods:{
+    register(){
+      if(this.password!=this.repeatPassword)
+      {
+        this.$q.notify({
+            message: "Las contraseñas son diferentes",
+            color: 'red',
+            position: 'top',
+            timeout: 5000
+          })
+        return false;
+      }
+
+
+      let url = "http://localhost:5083/api/User/SignUp"
+      var data = {
+        firstname: this.firstName,
+        lastName: this.lastName,
+        dateOfBirth: this.dateOfBirth,
+        country: this.country,
+        address: this.address,
+        email: this.email,
+        password: this.password
+      }
+      //Se realiza la petición con axios por POST
+      axios.post(url,data)
+        .then(response=>{
+          this.$q.notify({
+            message: "Registro exitoso",
+            color: 'green',
+            position: 'top',
+            timeout: 5000
+          })
+          this.$router.push("/")
+        }).catch(error=>{
+
+          this.$q.notify({
+            message: "Ocurrió un error al registrar",
+            color: 'red',
+            position: 'top',
+            timeout: 5000
+          })
+        })
+    }
+  }
 }
 
 </script>
