@@ -1,64 +1,85 @@
 <template>
-    <h6>Listado de Products</h6>
-    <div class="product-list">
-        <div class="product-grid">
-            <div class="product-item" v-for="prod in products" :key="prod.id">
-                <ProductItem :product="prod">
-                </ProductItem>
-
-            </div>
-        </div>
-
+  <h5>Listado de Productos</h5>
+  <div class="product-list">
+    <div class="product-grid">
+      <div class="product-item" v-for="producto in productos" :key="producto.id">
+        <ProductItem :product="producto"></ProductItem>
+      </div>
 
     </div>
+  </div>
 </template>
 
-<style></style>
+<style>
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px
+}
+</style>
 
 <script>
-
-import axios from "axios"
-
-import ProductItem from './ProductItem.vue';
+import axios from 'axios'
+import ProductItem from 'components/product/ProductItem.vue'
 
 export default {
-    name: "ProductList",
-    mounted() {
-        this.cargarProductos()
-    },
-    components: {
-        ProductItem
-    },
-    methods: {
-        cargarProductos() {
-            var url = "http://localhost:5083/api/Product"
-
-            axios.get(url)
-                .then(response => {
-                    this.products = response.data
-                })
-        }
-    },
-    data() {
-        return {
-
-            productsMock: [
-                {
-                    "id": 1,
-                    "description": "TV OLED 65 pulgadas",
-                    "price": 3999,
-                    "imageUrl": "https://picsum.photos/100/100"
-                },
-                {
-                    "id": 2,
-                    "description": "Iphone 23 Mega Pro",
-                    "price": 14999,
-                    "imageUrl": "https://picsum.photos/100/100"
-                }
-            ],
-            products: []
-        }
+  name: "ProductList",
+  components: {
+    ProductItem
+  },
+  mounted() {
+    this.listadoProductos()
+  },
+  data() {
+    return {
+      productos: [],
+      productos1: [
+        {
+          "id": 1,
+          "description": "Samsung Galaxy 23",
+          "imageUrl": "https://picsum.photos/100/100",
+          "stock": 10,
+          "price": 3999,
+          "discount": null,
+          "category": {
+            "id": 1,
+            "description": "Celulares"
+          }
+        },
+        {
+          "id": 2,
+          "description": "Iphone 14",
+          "imageUrl": "https://picsum.photos/100/100",
+          "stock": 20,
+          "price": 4599,
+          "discount": null,
+          "category": {
+            "id": 1,
+            "description": "Celulares"
+          }
+        }]
     }
+  },
+  methods: {
+    listadoProductos() {
+      var url = 'http://localhost:5083/api/Product'
+      var token = JSON.parse(localStorage.getItem("dataUser")).token
+      console.log("Token: " + token)
+      axios
+        .get(url, {
+          headers: {
+            Authorization: 'Bearer ' + token
+          }
+        })
+        .then(response => {
+          console.log(JSON.stringify(response.data))
+          this.productos = response.data
+        }).catch(error => {
+          this.$router.push("/")
+        })
+
+    }
+  }
 
 }
 
